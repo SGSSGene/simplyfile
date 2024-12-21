@@ -4,12 +4,17 @@ cmake_minimum_required(VERSION 3.12)
 project(simplyfile)
 include(GNUInstallDirs)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
-
-file(GLOB_RECURSE CPP_SRCS ./*.cpp)
+file(GLOB_RECURSE CPP_SRCS src/simplyfile/*.cpp)
 
 add_library(simplyfile SHARED ${CPP_SRCS})
+add_library(simplyfile::simplyfile ALIAS simplyfile)
+
+target_include_directories(simplyfile
+    PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/src/>
+    $<INSTALL_INTERFACE:include>
+)
+target_compile_features(simplyfile PUBLIC cxx_std_17)
 
 set(DEST_DIR "${CMAKE_INSTALL_PREFIX}")
 
@@ -30,18 +35,18 @@ configure_file(simplyfile.pc.in simplyfile.pc @ONLY)
 
 install(TARGETS simplyfile DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(FILES
-    Epoll.h
-    Event.h
-    FileDescriptor.h
-    INotify.h
-    Process.h
-    SerialPort.h
-    ThreadTime.h
-    Timer.h
+    src/simplyfile/Epoll.h
+    src/simplyfile/Event.h
+    src/simplyfile/FileDescriptor.h
+    src/simplyfile/INotify.h
+    src/simplyfile/Process.h
+    src/simplyfile/SerialPort.h
+    src/simplyfile/ThreadTime.h
+    src/simplyfile/Timer.h
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME})
 install(FILES
-    socket/Host.h
-    socket/Socket.h
+    src/simplyfile/socket/Host.h
+    src/simplyfile/socket/Socket.h
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/socket)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/simplyfile.pc
     DESTINATION ${CMAKE_INSTALL_PREFIX}/share/pkgconfig)
